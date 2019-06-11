@@ -103,7 +103,7 @@ function print_static_map {
     do
         print_map_characters_with_delay "$line"
         echo ""
-    done < "land.ascii"
+    done < "$1"
 }
 
 RED_COLOR='\033[0;31m'
@@ -147,8 +147,22 @@ function main {
     # Here we will print table with available Defcon levels
     print_defcon_table $DEFCON_LEVEL
 
+    print_string_with_delay "> establishing connection with geo data server..."
+    MAP_DATA_FILE="map.ascii"
+    $(curl --get "https://raw.githubusercontent.com/MyCatShoegazer/DefconChecker/master/land.ascii" -o $MAP_DATA_FILE)
+
+    MAP_DATA=$(cat $MAP_DATA_FILE)
+    if [[ -z "$MAP_DATA" ]]
+    then
+        echo -e -n "${RED_COLOR}"
+        print_string_with_delay "error retrieving geo data..."
+        print_string_with_delay "exiting..."
+        echo -e -n "${GREEN_COLOR}"
+        return -1
+    fi
+
     print_string_with_delay "> loading world map data..."
-    print_static_map
+    print_static_map $MAP_DATA_FILE
     print_string_with_delay "> LEGEND"
     print_map_characters_with_delay "    x - nuclear strike areas"
     print_map_characters_with_delay "    z - safe place"
@@ -157,3 +171,4 @@ function main {
 }
 
 main
+rm map.ascii
