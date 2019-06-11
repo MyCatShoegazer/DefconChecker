@@ -10,7 +10,7 @@ function print_string_with_delay() {
 }
 
 function print_map_characters_with_delay() {
-    STRING=$1
+    STRING=$2
     for (( i=0; i<${#STRING}; i++ )); do
         if [[ "${STRING:$i:1}" == "x" ]]
         then
@@ -22,7 +22,7 @@ function print_map_characters_with_delay() {
             echo -e -n "${GREEN_COLOR}"
         fi
         echo -n "${STRING:$i:1}"
-        sleep 0.00001
+        sleep $1
     done
 }
 
@@ -101,9 +101,19 @@ function print_defcon_table {
 function print_static_map {
     while IFS= read -r line
     do
-        print_map_characters_with_delay "$line"
+        print_map_characters_with_delay 0.00001 "$line"
         echo ""
     done < "$1"
+}
+
+function estimation_timer_run() {
+    for (( m=10; m>0; m-- )); do
+        for (( s=59; s>0; s-- )); do
+            clear
+            print_map_characters_with_delay 0.01 "ESTIMATED TIME: ${m}:${s}"
+            sleep 1
+        done
+    done
 }
 
 RED_COLOR='\033[0;31m'
@@ -164,10 +174,14 @@ function main {
     print_string_with_delay "> loading world map data..."
     print_static_map $MAP_DATA_FILE
     print_string_with_delay "> LEGEND"
-    print_map_characters_with_delay "    x - nuclear strike areas"
-    print_map_characters_with_delay "    z - safe place"
+    print_map_characters_with_delay 0.00001 "    x - nuclear strike areas"
+    print_map_characters_with_delay 0.00001 "    z - safe place"
     echo ""
     print_string_with_delay "> map loaded successfuly..."
+
+    sleep 10
+
+    estimation_timer_run
 }
 
 main
