@@ -157,9 +157,11 @@ function main {
     # Here we will print table with available Defcon levels
     print_defcon_table $DEFCON_LEVEL
 
+    sleep 5
+
     print_string_with_delay "> establishing connection with geo data server..."
     MAP_DATA_FILE="map.ascii"
-    $(curl --get "https://raw.githubusercontent.com/MyCatShoegazer/DefconChecker/master/land.ascii" -o $MAP_DATA_FILE)
+    $(curl --silent --get "https://raw.githubusercontent.com/MyCatShoegazer/DefconChecker/master/land.ascii" -o $MAP_DATA_FILE)
 
     MAP_DATA=$(cat $MAP_DATA_FILE)
     if [[ -z "$MAP_DATA" ]]
