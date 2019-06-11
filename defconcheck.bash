@@ -178,6 +178,7 @@ function main {
     print_map_characters_with_delay 0.00001 "    z - safe place"
     echo ""
     print_string_with_delay "> map loaded successfuly..."
+    rm map.ascii
 
     sleep 10
 
@@ -185,4 +186,3 @@ function main {
 }
 
 main
-rm map.ascii
